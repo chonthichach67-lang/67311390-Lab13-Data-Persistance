@@ -1,5 +1,3 @@
-// lib/screens/transaction_list_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -18,38 +16,49 @@ class TransactionListScreen extends StatelessWidget {
       body: Consumer<TransactionProvider>(
         builder: (context, txProvider, child) =>
             txProvider.transactions.isEmpty
-                ? const Center(child: Text('ไม่มีรายการ'))
+                ? const Center(
+                    child: Text('ไม่มีรายการ'),
+                  )
                 : ListView.builder(
                     itemCount: txProvider.transactions.length,
                     itemBuilder: (ctx, i) {
                       final tx = txProvider.transactions[i];
+
                       return ListTile(
                         leading: CircleAvatar(
                           child: Text(
-                            tx.type == TransactionType.income ? 'รับ' : 'จ่าย',
+                            tx.type == TransactionType.income
+                                ? 'รับ'
+                                : 'จ่าย',
                           ),
                         ),
                         title: Text(tx.title),
-                        subtitle: Text(DateFormat.yMMMd().format(tx.date)),
+                        subtitle: Text(
+                          DateFormat.yMMMd().format(tx.date),
+                        ),
+
+                        // แสดงจำนวนเงิน + ปุ่มลบ
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               '${tx.amount.toStringAsFixed(2)} บาท',
                               style: TextStyle(
-                                color: tx.type == TransactionType.income
-                                    ? Colors.green
-                                    : Colors.red,
+                                color:
+                                    tx.type == TransactionType.income
+                                        ? Colors.green
+                                        : Colors.red,
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.grey),
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.grey,
+                              ),
                               onPressed: () {
-                                if (tx.id != null) {
-                                  context
-                                      .read<TransactionProvider>()
-                                      .deleteTransaction(tx.id!);
-                                }
+                                context
+                                    .read<TransactionProvider>()
+                                    .deleteTransaction(tx.id!);
                               },
                             ),
                           ],
@@ -58,8 +67,12 @@ class TransactionListScreen extends StatelessWidget {
                     },
                   ),
       ),
+
+      // ปุ่มเพิ่มรายการตัวอย่างชั่วคราว
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<TransactionProvider>().addTransaction(
+        onPressed: () => context
+            .read<TransactionProvider>()
+            .addTransaction(
               'ค่าอาหาร',
               120.0,
               DateTime.now(),
